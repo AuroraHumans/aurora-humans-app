@@ -1,7 +1,14 @@
 # Aurora Humans Project 
 Collecting the world's experience of the Aurora.
 
-## What can be made?
+## Roadmap
+- RAG querying a country
+- Public Gallery Hosted
+- Turn into a Hugging Face Dataset
+- Building Diffusers, and Base Models for this kind of a project.
+- Integrate with other human gatherings..
+
+## What else can be made?
 
 - Dynamic Diffusion Models
 - Composite Imagery
@@ -17,3 +24,5 @@ The World's largest repository of aurora images in 2024. Available for the world
 
 
 With love, Aurora Humans 
+core@synavate.tech
+
