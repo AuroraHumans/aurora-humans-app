@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  streamlit-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: streamlit-app:latest
+    container_name: streamlit-app-container
+    ports:
+      - "8501:8501"
+    environment:
+      - AWS_ACCESS_KEY_ID=702966150d9ac9aefb172508330cb413
+      - AWS_SECRET_ACCESS_KEY=a09af2ce647d0bab7dc0d465483072a1f1a042037a9dbb3bd5a7260b6699c00a
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    user: core
+
+volumes:
+  data:
+    driver: local
