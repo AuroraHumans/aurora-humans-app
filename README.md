@@ -1,6 +1,8 @@
 # Aurora Humans Project 
 Collecting the world's experience of the Aurora.
 
+We don't gather enough as people and this is the first of many to come. Human datasets of the human experience.
+
 ## Roadmap
 - RAG querying a country
 - Public Gallery Hosted
@@ -24,5 +26,5 @@ The World's largest repository of aurora images in 2024. Available for the world
 
 
 With love, Aurora Humans 
-core@synavate.tech
+[Email Us](mailto:core@synavate.tech)
 
