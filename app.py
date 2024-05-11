@@ -5,7 +5,7 @@ import os
 import boto3
 import streamlit as st
 from botocore.client import Config
-from upload_file import upload_single_photo
+from upload_file import upload_single_photo, auth_s3_r2
 from dotenv import load_dotenv
 from PIL import Image
 
@@ -65,8 +65,8 @@ if clicked:
         # Create S3 bucket path for image and metadata
         s3_image_key = f"images/{uploaded_file.name}"
         s3_metadata_key = f"metadata/{uploaded_file.name}.json"
-        
-        upload_single_photo(s3_image_key, s3_metadata_key)
+        s3 = auth_s3_r2()
+        upload_single_photo(s3, s3_image_key, s3_metadata_key)
 
         st.success("Image and metadata successfully uploaded to S3")
         st.text("The image here is lower quality but do not be alarmed - yours is fine.")

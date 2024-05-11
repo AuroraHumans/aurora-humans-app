@@ -7,45 +7,32 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 load_dotenv()
 
-
-
-BUCKET_NAME="aurora-humans"
-ACCESS_KEY=os.getenv("ACCESS_KEY_ID")
-SECRET_KEY=os.getenv("SECRET_KEY_ACCESS")
-R2_ENDPOINT=os.getenv("AURORA_ENDPOINT")
+# Environment variables
+BUCKET_NAME = "aurora-humans"
+ACCESS_KEY = os.getenv("ACCESS_KEY_ID")
+SECRET_KEY = os.getenv("SECRET_KEY_ACCESS")
+R2_ENDPOINT = os.getenv("AURORA_ENDPOINT")
 
 
 def auth_s3_r2(r2_endpoint=R2_ENDPOINT):
-    # Initialize AWS S3 Client
-    s3 = boto3.client('s3', region_name='auto')
-    session = boto3.session.Session()
-
-# Create a client using the R2 endpoint
-    s3 = session.client(
-        service_name='s3',
-        aws_access_key_id=ACCESS_KEY,
-        aws_secret_access_key=SECRET_KEY,
-        endpoint_url=r2_endpoint,
-        config=Config(signature_version='s3v4')
+    # Initialize AWS S3 Client using custom config
+    s3 = boto3.client(
+        's3',
+        endpoint_url=r2_endpoint
     )
+    return s3
 
-
-# Assuming auth_s3_r2 is a function that authenticates and sets the environment variables for R2
-def upload_single_photo(image, metadata):
+def upload_single_photo(s3,image, metadata):
     try:
-        auth_s3_r2(r2_endpoint=R2_ENDPOINT)
+        s3 = auth_s3_r2(R2_ENDPOINT)
     except Exception as e:
         print(f"Error in authentication: {e}")
-        return
-
-    # Initialize the S3 client
-    s3 = boto3.client('s3')
-
+        
     try:
         # Upload image
         s3.put_object(
             Bucket=BUCKET_NAME,
-            Key=image.name,
+            Key=image,
             Body=image.read(),
             ContentType='image/jpeg'  # Adjust this to match your image format
         )
@@ -54,14 +41,11 @@ def upload_single_photo(image, metadata):
         # Upload metadata
         s3.put_object(
             Bucket=BUCKET_NAME,
-            Key=f"{image.name}.json",  # This will associate metadata with the image name
+            Key=f"{image.name}.json",
             Body=json.dumps(metadata),
             ContentType='application/json'
         )
-        print(f"META DATA for {image.name} uploaded")
-        
-        s3.upload_file(image, BUCKET_NAME, image)
-        s3.upload_file(metadata, BUCKET_NAME, f"{image}.json")()
+        print(f"META DATA for {image} uploaded")
 
     except Exception as e:
         print(f"Error in uploading to S3: {e}")
@@ -69,12 +53,13 @@ def upload_single_photo(image, metadata):
 
     print("Upload Successful")
 
+
     
 #### @TODO IMPLEMENT WHEN WORKING
 def upload_batch(photos, metadata, destination):
     pass
 
-def list_buckets():
+def list_buckets(s3):
     response = s3.list_buckets()
     for bucket in response['Buckets']:
         print(bucket['Name'])
