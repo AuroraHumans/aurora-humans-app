@@ -1,8 +1,8 @@
 import io
 import json
 import os
+import logging
 import streamlit as st
-from lib.gcp.gcp_upload import authenticate_implicit_with_adc
 from lib.extract_metadata import extract_metadata
 from lib.gcp.gcp_upload import upload_blob
 from google.cloud import storage, Client 
@@ -82,7 +82,7 @@ if clicked:
         }
         upload_blob(image, image)
         logging.info(f"Image: {image} uploaded")
-        upload_blob(metadata,f"{image_metadata}")
+        upload_blob(metadata, f"{metadata}.json")
         logging.info(f"Metadata: {metadata} uploaded")
         insert_metadata(metadata)
         logging.info(f"Metadata: {metadata} stored in Mongo")

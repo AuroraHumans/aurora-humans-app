@@ -2,12 +2,16 @@
 import os
 from google.cloud import storage, Client 
 from dotenv import load_dotenv
+from google.cloud import storage
+from secrets_manager_client import get_secret
 load_dotenv()
 
-def upload_blob(source_file_name, bucket_name=os.getenv("SOURCE_BUCKET"), destination_blob_name=os.getenv("DESTINATION_BLOB")):
+def upload_blob(source_file_name, source_bucket_name=os.getenv("SOURCE_BUCKET"), destination_blob_name=os.getenv("DESTINATION_BLOB")):
     """Uploads a file to the bucket."""
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
+    secret = get_secret(project_id=os.getenv("GCP_PROJECT_ID"), secret = os.getenv("SECRET_NAME"))
+    storage_client = storage.Client(project=os.getenv("GCP_PROJECT_ID"), credentials=secret)
+    
+    bucket = storage_client.bucket(os.getenv("STORAGE_BUCKET"))
     blob = bucket.blob(destination_blob_name)
 
     # Set the generation-match precondition to avoid overwriting existing files
