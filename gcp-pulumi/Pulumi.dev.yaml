@@ -1,3 +1,5 @@
 config:
+  aurora-humans:bucketName: aurora-humans
   aurora-humans:githubRepoUrl: https://github.com/AuroraHumans/aurora-humans-app.git
+  aurora-humans:imageName: aurora-humans
   gcp:project: langchaindata

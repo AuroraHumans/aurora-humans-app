@@ -4,9 +4,10 @@ from google.cloud import storage, Client
 from dotenv import load_dotenv
 from google.cloud import storage
 from secrets_manager_client import get_secret
+from datetime import datetime
 load_dotenv()
 
-def upload_blob(source_file_name, source_bucket_name=os.getenv("SOURCE_BUCKET"), destination_blob_name=os.getenv("DESTINATION_BLOB")):
+def upload_blob(destination_blob_name, source_file_name, source_bucket_name=os.getenv("SOURCE_BUCKET")):
     """Uploads a file to the bucket."""
     secret = get_secret(project_id=os.getenv("GCP_PROJECT_ID"), secret = os.getenv("SECRET_NAME"))
     storage_client = storage.Client(project=os.getenv("GCP_PROJECT_ID"), credentials=secret)
@@ -20,7 +21,7 @@ def upload_blob(source_file_name, source_bucket_name=os.getenv("SOURCE_BUCKET"),
     # For updating an existing blob, you can retrieve its generation with
     # `blob.generation` and set `if_generation_match` to that value.
     blob.upload_from_filename(
-        source_file_name,
+        f"{source_file_name}_{datetime.now()}.png",
         if_generation_match=0  # Ensures that the file is uploaded only if it does not exist.
     )
 
