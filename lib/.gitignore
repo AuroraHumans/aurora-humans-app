@@ -1,2 +1,2 @@
 *.env
-/gcp/auth/langchaindata-20c6e8a238ae.json
+gcp/auth/langchaindata-20c6e8a238ae.json

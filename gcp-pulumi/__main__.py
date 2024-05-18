@@ -1,3 +1,8 @@
+"""
+The core logic for Pulumi infrastructure management
+
+
+"""
 import os
 import pulumi
 import pulumi_gcp as gcp
@@ -42,7 +47,7 @@ cloud_run_service = gcp.cloudrun.Service("aurora-humans-run",
     ))
 
 # 5. Google Deploy with 2 stages - setting up a Delivery Pipeline
-delivery_pipeline = gcp.clouddeploy.DeliveryPipeline("aurora-deliver-pipeline",
+delivery_pipeline = gcp.clouddeploy.DeliveryPipeline(resource_name="aurora-deliver-pipeline", location="asia", name="aurora-deliver-pipeline",
     project=os.getenv("GCP_PROJECT_ID"),
     serial_pipeline=gcp.clouddeploy.DeliveryPipelineSerialPipelineArgs(
         stages=[
@@ -52,14 +57,14 @@ delivery_pipeline = gcp.clouddeploy.DeliveryPipeline("aurora-deliver-pipeline",
             gcp.clouddeploy.DeliveryPipelineSerialPipelineStageArgs(
                 target_id="production"
             ),
-        ]
+        ],
     )
 )
 
 # 6. Create API Gateway - expose Cloud Run services
 api_gateway = gcp.apigateway.Api("aurora-gateway",
     project=os.getenv("GCP_PROJECT_ID"),
-    api_id="aurora-human-api"
+    api_id="aurora-human-api",
 )
 
 # Outputs

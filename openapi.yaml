@@ -8,7 +8,7 @@ paths:
   /:
     get:
       x-google-backend:
-        address: https://your-cloud-run-service-url
+        address: https://
       responses:
         '200':
           description: "A successful response"

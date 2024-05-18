@@ -8,7 +8,6 @@ def get_secret(project_id: str, secret_id: str) -> secretmanager.GetSecretReques
     """
 
     # Import the Secret Manager client library.
-    from google.cloud import secretmanager
     replication = ""
 
     # Create the Secret Manager client.

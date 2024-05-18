@@ -1,3 +1,4 @@
+import os
 from lib.gcp.auth.gcp_auth import authenticate_implicit_with_adc
 from gcp_upload import upload_blob
 
