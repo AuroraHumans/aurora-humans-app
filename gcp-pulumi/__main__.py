@@ -12,8 +12,7 @@ load_dotenv()
 
 # 1. Mirror the Github Registry
 # Assuming that the GitHub repository already exists
-repo = github.Repository("AuroraHumans/aurora-humans-app",
-    name="Aurora-Humans",
+repo = github.Repository("aurora-humans-app",
     description="Streamlit Application for Uploading Aurora Photos",
     visibility="public"
 )
@@ -68,7 +67,7 @@ api_gateway = gcp.apigateway.Api("aurora-gateway",
 )
 
 # Outputs
-pulumi.export("repository_url", repo.clone_url)
+pulumi.export('repo_name', repo.name)
 pulumi.export("container_registry_name", container_registry.id)
 pulumi.export("cloud_run_service_url", cloud_run_service.statuses[0].url)
 pulumi.export("delivery_pipeline_name", delivery_pipeline.id)
