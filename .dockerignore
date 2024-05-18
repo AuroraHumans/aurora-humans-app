@@ -2,6 +2,5 @@ lib/wip/
 .venv/
 .vscode/
 __pycache__/
-gcp-pulumi/
 .DS_Store
 .arc/

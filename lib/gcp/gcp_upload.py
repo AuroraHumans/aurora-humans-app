@@ -10,8 +10,9 @@ load_dotenv()
 def upload_blob(destination_blob_name, source_file_name, source_bucket_name=os.getenv("SOURCE_BUCKET")):
     """Uploads a file to the bucket."""
     secret = get_secret(project_id=os.getenv("GCP_PROJECT_ID"), secret = os.getenv("SECRET_NAME"))
+    print(secret)
     storage_client = storage.Client(project=os.getenv("GCP_PROJECT_ID"), credentials=secret)
-    
+    print(storage_client)
     bucket = storage_client.bucket(os.getenv("STORAGE_BUCKET"))
     blob = bucket.blob(destination_blob_name)
 
