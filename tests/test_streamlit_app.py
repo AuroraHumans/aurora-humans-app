@@ -4,7 +4,7 @@ from PIL import Image
 import io
 
 # Assume the module is named streamlit_app.py and contains the Streamlit script
-from ..app import uploaded_file
+from app import uploaded_file
 
 @pytest.fixture
 def mock_streamlit():
