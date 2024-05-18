@@ -12,6 +12,7 @@ grpc-google-iam-v1==0.13.0
 grpcio==1.60.1
 grpcio-status==1.60.1
 h11==0.14.0
+exifread==3.0.0
 pulumi>=3.0.0,<4.0.0
 pulumi-gcp>=7.0.0,<8.0.0
 pulumi-github==6.2.0
