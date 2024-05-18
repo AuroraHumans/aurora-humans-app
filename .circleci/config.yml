@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
-          command: pytest
+          command: pytest tests
       - run:
           name: Pulumi 
           command: pulumi up --yes
