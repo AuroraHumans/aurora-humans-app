@@ -1,6 +1,6 @@
 # Python Client Library to upload file
 import os
-from google.cloud import storage, Client 
+from google.cloud import storage
 from dotenv import load_dotenv
 from google.cloud import storage
 from secrets_manager_client import get_secret
