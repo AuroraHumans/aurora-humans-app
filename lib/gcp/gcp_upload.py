@@ -3,12 +3,15 @@ import os
 from google.cloud import storage
 from dotenv import load_dotenv
 from google.cloud import storage
+from google.cloud import secretmanager
 from secrets_manager_client import get_secret
 from datetime import datetime
 load_dotenv()
 
 def upload_blob(destination_blob_name, source_file_name, source_bucket_name=os.getenv("SOURCE_BUCKET")):
     """Uploads a file to the bucket."""
+    client = secretmanager.SecretManagerServiceClient()
+    parent = f"projects/{os.getenv('GCP_PROJECT_ID')}/
     secret = get_secret(project_id=os.getenv("GCP_PROJECT_ID"), secret = os.getenv("SECRET_NAME"))
     print(secret)
     storage_client = storage.Client(project=os.getenv("GCP_PROJECT_ID"), credentials=secret)
