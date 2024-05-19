@@ -1,5 +1,6 @@
 lib/wip/
 .venv/
+venv/
 .vscode/
 __pycache__/
 gcp-pulumi/
