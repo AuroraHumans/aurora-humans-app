@@ -3,24 +3,44 @@ version: 2.1
 executors:
   python-executor:
     environment:
-      DOCKER_USERNAME: $DOCKER_USERNAME # Reference environment variables set in CircleCI project settings
-      DOCKER_ACCCESS_TOKEN: $DOCKER_ACCCESS_TOKEN
+      DOCKER_USERNAME: $DOCKER_USERNAME
+      DOCKER_ACCESS_TOKEN: $DOCKER_ACCESS_TOKEN
     docker:
       - image: cimg/python:3.12.3
         auth:
           username: $DOCKER_USERNAME
-          password: $DOCKER_ACCCESS_TOKEN
-    working_directory: ./aurora-humans-app/
-    
+          password: $DOCKER_ACCESS_TOKEN
+    working_directory: ~/aurora-humans-app/
 
 jobs:
+  build:
+    executor: python-executor
+    steps:
+      - setup_remote_docker:
+          version: 20.10.7
+      - checkout
+      - run:
+          name: Docker Login
+          command: docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN
+      - run:
+          name: Install Dependencies
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - run:
+          name: Build Docker Image
+          command: docker build -t my-image .
+      - run:
+          name: Push Docker Image
+          command: |
+            docker tag my-image $DOCKER_USERNAME/my-image:latest
+            docker push $DOCKER_USERNAME/my-image:latest
+
   setup:
     executor: python-executor
     steps:
       - checkout
-      - run:
-          name: Docker Login
-          command: echo "$DOCKER_ACCESS_TOKEN" | docker login --username "$DOCKER_USERNAME" --password-stdin
       - run:
           name: Install Google Cloud SDK
           command: |
@@ -51,7 +71,7 @@ jobs:
           command: pulumi stack select dev
       - run:
           name: Pulumi preview
-          command: pulumi up --yes
+          command: pulumi preview --yes
 
   pulumi-deploy:
     executor: python-executor
@@ -67,14 +87,19 @@ jobs:
           name: Pulumi stack select
           command: pulumi stack select dev
       - run:
-          name: Pulumi up
+          name: Pulumi deploy
           command: pulumi up --yes
 
 workflows:
-  version: 2
   build_and_deploy:
     jobs:
-      - setup
+      - build:
+          context:
+            - build-env-vars
+            - docker-hub-creds
+      - setup:
+          requires:
+            - build
       - pulumi-preview:
           requires:
             - setup
