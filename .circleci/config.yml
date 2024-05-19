@@ -4,7 +4,7 @@ executors:
   python-executor:
     environment:
       DOCKER_USERNAME: $DOCKER_USERNAME # Reference environment variables set in CircleCI project settings
-      DOCKER_ACCCESS_TOKEN: $DOCKER_PASSWORD
+      DOCKER_ACCCESS_TOKEN: $DOCKER_ACCCESS_TOKEN
     docker:
       - image: cimg/python:3.12.3
         auth:
