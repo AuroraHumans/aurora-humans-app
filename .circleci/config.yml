@@ -11,8 +11,8 @@ executors:
     docker:
       - image: cimg/python:3.12.3
         auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_ACCESS_TOKEN
+          username: DOCKER_USERNAME
+          password: DOCKER_ACCESS_TOKEN
     working_directory: ~/app/
 
 jobs:
