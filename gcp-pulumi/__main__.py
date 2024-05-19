@@ -60,15 +60,35 @@ delivery_pipeline = gcp.clouddeploy.DeliveryPipeline(resource_name="aurora-deliv
     )
 )
 
-# 6. Create API Gateway - expose Cloud Run services
+# @TODO IMPLEMENT GATEWAY
+'''# 6. Create API Gateway - expose Cloud Run services
+import pulumi_std as std
+
+api_gw = gcp.apigateway.Api("api_gw", api_id="my-api")
+api_gw_api_config = gcp.apigateway.ApiConfig("api_gw",
+    api=api_gw.api_id,
+    api_config_id="my-config",
+    openapi_documents=[gcp.apigateway.ApiConfigOpenapiDocumentArgs(
+        document=gcp.apigateway.ApiConfigOpenapiDocumentDocumentArgs(
+            path="spec.yaml",
+            contents=std.filebase64(input="test-fixtures/openapi.yaml").result,
+        ),
+    )])
+
+api_gw_gateway = gcp.apigateway.Gateway("api_gw",
+    api_config=api_gw_api_config.id,
+    gateway_id="aurora-gateway",
+    )
+
 api_gateway = gcp.apigateway.Api("aurora-gateway",
     project=os.getenv("GCP_PROJECT_ID"),
     api_id="aurora-human-api",
-)
+    
+)'''
 
 # Outputs
 pulumi.export('repo_name', repo.name)
 pulumi.export("container_registry_name", container_registry.id)
 pulumi.export("cloud_run_service_url", cloud_run_service.statuses[0].url)
 pulumi.export("delivery_pipeline_name", delivery_pipeline.id)
-pulumi.export("api_gateway_service_endpoint", api_gateway.discovery_endpoint)
+#pulumi.export(api_gateway.discovery_endpoint)
