@@ -5,12 +5,18 @@ executors:
     docker:
       - image: circleci/python:3.11
     working_directory: ./app/
+    environment:
+      DOCKER_USERNAME: $DOCKER_USERNAME # Reference environment variables set in CircleCI project settings
+      DOCKER_PASSWORD: $DOCKER_PASSWORD
 
 jobs:
   setup:
     executor: python-executor
     steps:
       - checkout
+      - run:
+          name: Docker Login
+          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
       - run:
           name: Install Google Cloud SDK
           command: |
@@ -65,7 +71,9 @@ workflows:
   build_and_deploy:
     jobs:
       - setup
-      - pulumi-preview
+      - pulumi-preview:
+          requires:
+            - setup
       - pulumi-deploy:
           requires:
             - pulumi-preview
