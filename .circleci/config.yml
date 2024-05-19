@@ -3,10 +3,26 @@ version: 2.1
 orbs:
   docker: circleci/docker@2.6.0
 
+jobs:
+  build_docker:
+    environment:
+      DOCKER_USERNAME: $DOCKER_ACCESS_TOKENDOCKER_USERNAME
+      DOCKER_ACCESS_TOKEN: $DOCKER_ACCESS_TOKEN
+    docker:
+      - image: cimg/python:3.12.3
+      - auth:
+          username: DOCKER_USERNAME
+          password: DOCKER_ACCESS_TOKEN2S
+    steps:
+      -  run:
+          name: Build Docker Image
+          command: docker pull cimg/python:3.12.3
+
+
 executors:
   python-executor:
     environment:
-      DOCKER_USERNAME: $DOCKER_USERNAME
+      DOCKER_USERNAME: $DOCKER_ACCESS_TOKENDOCKER_USERNAME
       DOCKER_ACCESS_TOKEN: $DOCKER_ACCESS_TOKEN
     docker:
       - image: cimg/python:3.12.3
@@ -14,43 +30,7 @@ executors:
           username: $DOCKER_USERNAME
           password: $DOCKER_ACCESS_TOKEN
     working_directory: ~/app/
-
-jobs:
-  machine-job:
-    machine:
-      image: ubuntu-2004:current
-    resource_class: large
-    steps:
-      - docker/check:
-          docker-username: DOCKER_USERNAME  # DOCKER_LOGIN is the default value, if it exists, it automatically would be used.
-          docker-password: DOCKER_ACCESS_TOKEN  # DOCKER_PASSWORD is the default value
-      - docker/pull:
-          images: 'cimg/python:3.12.3'
-  build:
-    executor: python-executor
-    steps:
-      - setup_remote_docker:
-          version: 20.10.7
-      - checkout
-      - run:
-          name: Docker Login
-          command: docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN
-      - run:
-          name: Install Dependencies
-          command: |
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-      - run:
-          name: Build Docker Image
-          command: docker build -t aurora-humans-app .
-      - run:
-          name: Push Docker Image
-          command: |
-            docker tag my-image $DOCKER_USERNAME/aurora-humans-app:latest
-            docker push $DOCKER_USERNAME/aurora-humans-app:latest
-
-  setup:
+setup:
     executor: python-executor
     steps:
       - checkout
@@ -69,6 +49,32 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud config set project your-gcp-project-id
 
+
+build:
+  executor: python-executor
+  steps:
+    - setup_remote_docker:
+        version: 20.10.7
+    - checkout
+    - run:
+        name: Docker Login
+        command: docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN
+    - run:
+        name: Install Dependencies
+        command: |
+          python -m venv venv
+          . venv/bin/activate
+          pip install -r requirements.txt
+    - run:
+        name: Build Docker Image
+        command: docker buildx build -t aurora-humans-app .
+    - run:
+        name: Push Docker Image
+        command: |
+          docker tag my-image $DOCKER_USERNAME/aurora-humans-app:latest
+          docker push $DOCKER_USERNAME/aurora-humans-app:latest
+
+  
   pulumi-preview:
     executor: python-executor
     steps:
