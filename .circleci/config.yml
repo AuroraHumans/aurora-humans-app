@@ -4,7 +4,7 @@ executors:
   python-executor:
     docker:
       - image: circleci/python
-    working_directory: ./
+    working_directory: ./aurora-humans-app/
     environment:
       DOCKER_USERNAME: $DOCKER_USERNAME # Reference environment variables set in CircleCI project settings
       DOCKER_PASSWORD: $DOCKER_PASSWORD
