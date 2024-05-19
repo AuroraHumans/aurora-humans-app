@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  docker: circleci/docker@2.6.0
+
 executors:
   python-executor:
     environment:
@@ -8,11 +11,21 @@ executors:
     docker:
       - image: cimg/python:3.12.3
         auth:
-          username: DOCKER_USERNAME
+          username: $DOCKER_USERNAME
           password: DOCKER_ACCESS_TOKEN
     working_directory: ~/app/
 
 jobs:
+  machine-job:
+    machine:
+      image: ubuntu-2004:current
+    resource_class: large
+    steps:
+      - docker/check:
+          docker-username: $DOCKER_USERNAME  # DOCKER_LOGIN is the default value, if it exists, it automatically would be used.
+          docker-password: $DOCKER_ACCESS_TOKEN  # DOCKER_PASSWORD is the default value
+      - docker/pull:
+          images: 'circleci/node:latest'
   build:
     executor: python-executor
     steps:
@@ -93,7 +106,7 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - build:
+      - machine-job:
           context:
             - build-env-vars
             - docker-hub-creds
