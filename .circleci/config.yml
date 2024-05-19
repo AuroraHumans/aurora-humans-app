@@ -3,7 +3,7 @@ version: 2.1
 executors:
   python-executor:
     docker:
-      - image: circleci/python:3.11
+      - image: circleci/python
     working_directory: ./app/
     environment:
       DOCKER_USERNAME: $DOCKER_USERNAME # Reference environment variables set in CircleCI project settings
