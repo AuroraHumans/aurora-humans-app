@@ -47,7 +47,7 @@ jobs:
           command: pulumi stack select dev
       - run:
           name: Pulumi preview
-          command: pulumi preview
+          command: pulumi up --yes
 
   pulumi-deploy:
     executor: python-executor
