@@ -22,10 +22,10 @@ jobs:
     resource_class: large
     steps:
       - docker/check:
-          docker-username: $DOCKER_USERNAME  # DOCKER_LOGIN is the default value, if it exists, it automatically would be used.
-          docker-password: $DOCKER_ACCESS_TOKEN  # DOCKER_PASSWORD is the default value
+          docker-username: DOCKER_USERNAME  # DOCKER_LOGIN is the default value, if it exists, it automatically would be used.
+          docker-password: DOCKER_ACCESS_TOKEN  # DOCKER_PASSWORD is the default value
       - docker/pull:
-          images: 'circleci/node:latest'
+          images: 'cimg/python:3.12.3'
   build:
     executor: python-executor
     steps:
