@@ -8,9 +8,9 @@ executors:
     docker:
       - image: cimg/python:3.12.3
         auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_ACCESS_TOKEN
-    working_directory: ~/aurora-humans-app/
+          username: DOCKER_USERNAME
+          password: DOCKER_ACCESS_TOKEN
+    working_directory: ~/app/
 
 jobs:
   build:
@@ -30,12 +30,12 @@ jobs:
             pip install -r requirements.txt
       - run:
           name: Build Docker Image
-          command: docker build -t my-image .
+          command: docker build -t aurora-humans-app .
       - run:
           name: Push Docker Image
           command: |
-            docker tag my-image $DOCKER_USERNAME/my-image:latest
-            docker push $DOCKER_USERNAME/my-image:latest
+            docker tag my-image $DOCKER_USERNAME/aurora-humans-app:latest
+            docker push $DOCKER_USERNAME/aurora-humans-app:latest
 
   setup:
     executor: python-executor
