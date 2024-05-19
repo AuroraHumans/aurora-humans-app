@@ -7,6 +7,7 @@ executors:
   python-executor:
     environment:
        GCLOUD_SERVICE_KEY: $GCLOUD_SERVICE_KEY
+       HOME: $HOME
     docker:
       - image: cimg/python:3.12.3
         auth:
