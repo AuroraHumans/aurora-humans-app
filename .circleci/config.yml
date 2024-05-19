@@ -11,6 +11,7 @@ executors:
           username: $DOCKER_USERNAME
           password: $DOCKER_ACCCESS_TOKEN
     working_directory: ./aurora-humans-app/
+    
 
 jobs:
   setup:
@@ -19,7 +20,7 @@ jobs:
       - checkout
       - run:
           name: Docker Login
-          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+          command: echo "$DOCKER_ACCESS_TOKEN" | docker login --username "$DOCKER_USERNAME" --password-stdin
       - run:
           name: Install Google Cloud SDK
           command: |
