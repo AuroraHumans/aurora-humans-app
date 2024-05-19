@@ -110,6 +110,9 @@ workflows:
           context:
             - build-env-vars
             - docker-hub-creds
+      - build:
+          requires:
+            - machine-job
       - setup:
           requires:
             - build
