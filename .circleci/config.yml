@@ -55,7 +55,7 @@ jobs:
             command: |
               echo $GCLOUD_SERVICE_KEY | base64 --decode > ./gcloud-service-key.json
               gcloud auth activate-service-account --key-file=./gcloud-service-key.json
-              gcloud config set project $GCP_PROJECT_ID
+              gcloud config set project langchaindata
 
   pulumi-preview:
     executor: python-executor
