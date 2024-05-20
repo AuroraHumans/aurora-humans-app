@@ -47,8 +47,8 @@ jobs:
             command: |
               pip install -q google-cloud secret-manager google-cloud-storage
               mkdir -p ./tmp && \
-              echo GCLOUD_SERVICE_KEY | base64 --decode > ./tmp/file.txt || { echo "Failed to decode and write the service key"; exit 1; }
-              gcloud auth activate-service-account --key-file=./tmp/file.txt
+              echo GCLOUD_SERVICE_KEY | base64 --decode > "./tmp/file.txt" || { echo "Failed to decode and write the service key"; exit 1; }
+              gcloud auth activate-service-account --key-file="./tmp/file.txt"
               gcloud config set project langchaindata
               rm -rf ./tmp/
   pulumi-preview:
@@ -91,9 +91,5 @@ workflows:
     jobs:
       - build
       - gcloud-auth
-      - pulumi-preview:
-          requires:
-            - gcloud-auth
-      - pulumi-deploy:
-          requires:
-            - pulumi-preview
+      - pulumi-preview
+      - pulumi-deploy
