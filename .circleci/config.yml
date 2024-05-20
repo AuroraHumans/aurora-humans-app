@@ -45,7 +45,7 @@ jobs:
         - run:
             name: Install Google Cloud SDK
             command: |
-              pip install -u -q google-cloud secret-manager google-cloud-storage
+              pip install -q google-cloud secret-manager google-cloud-storage
               mkdir -p ./tmp  # Ensure the directory exists
               echo $GCLOUD_SERVICE_KEY | base64 --decode > ./tmp/file.txt
               gcloud auth activate-service-account --key-file=./tmp/file.txt
