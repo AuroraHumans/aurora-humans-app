@@ -16,25 +16,6 @@ executors:
     working_directory: ./
 
 jobs:
-  setup:
-    executor: python-executor
-    steps:
-      - checkout
-      - run:
-          name: Install Google Cloud SDK
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y apt-transport-https ca-certificates gnupg
-            echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-            curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-            sudo apt-get update && sudo apt-get install -y google-cloud-sdk
-      - run:
-          name: Authenticate with GCP
-          command: |
-            echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
-            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            gcloud config set project your-gcp-project-id
-
   build:
     executor: python-executor
     steps:
@@ -55,6 +36,25 @@ jobs:
           command: |
             docker build -t $DOCKER_USERNAME/aurora-humans-app:latest .
             docker push $DOCKER_USERNAME/aurora-humans-app:latest
+
+  setup:
+      executor: python-executor
+      steps:
+        - checkout
+        - run:
+            name: Install Google Cloud SDK
+            command: |
+              sudo apt-get update
+              sudo apt-get install -y apt-transport-https ca-certificates gnupg
+              echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+              curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+              sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+        - run:
+            name: Authenticate with GCP
+            command: |
+              echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+              gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+              gcloud config set project your-gcp-project-id
 
   pulumi-preview:
     executor: python-executor
@@ -94,13 +94,11 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
+      - build
       - setup
-      - build:
-          requires:
-            - setup
       - pulumi-preview:
           requires:
-            - build
+            - setup
       - pulumi-deploy:
           requires:
             - pulumi-preview
