@@ -45,6 +45,7 @@ jobs:
         - run:
             name: Install Google Cloud SDK
             command: |
+              sudo apt-get install -y google-cloud-sdk
               sudo apt-get update
               sudo apt-get install -y apt-transport-https ca-certificates gnupg
               echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
@@ -56,16 +57,7 @@ jobs:
                     echo $GCLOUD_SERVICE_KEY | base64 --decode > ./tmp/file.txt
                     gcloud auth activate-service-account --key-file=./tmp/file.txt
                     gcloud config set project langchaindata
-                    rm -rf ./tmp  # Clean up
-              sudo apt-get install -y google-cloud-sdk
-              - run:
-                name: Authenticate with GCP
-                command: |
-                  mkdir -p ./tmp  # Ensure the directory exists
-                  echo $GCLOUD_SERVICE_KEY | base64 --decode > ./tmp/file.txt
-                  gcloud auth activate-service-account --key-file=./tmp/file.txt
-                  gcloud config set project langchaindata
-                  rm -rf ./tmp
+                    rm -rf ./tmp/
   pulumi-preview:
     executor: python-executor
     steps:
