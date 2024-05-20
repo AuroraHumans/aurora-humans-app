@@ -8,6 +8,7 @@ executors:
     environment:
        GCLOUD_SERVICE_KEY: $GCLOUD_SERVICE_KEY
        HOME: $HOME
+       GCP_PROJECT_ID: $GCP_PROJECT_ID
     docker:
       - image: cimg/python:3.12.3
         auth:
@@ -54,7 +55,7 @@ jobs:
             command: |
               echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
               gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-              gcloud config set project your-gcp-project-id
+              gcloud config set project $GCP_PROJECT_ID
 
   pulumi-preview:
     executor: python-executor
