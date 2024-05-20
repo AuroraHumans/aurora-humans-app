@@ -43,14 +43,28 @@ jobs:
       steps:
         - checkout
         - run:
-            name: Install Google Cloud SDK
+            name: Install Google Cloud SDK and Authenticate
             command: |
-              pip install -q google-cloud secret-manager google-cloud-storage
-              mkdir -p ./tmp && \
-              echo GCLOUD_SERVICE_KEY | base64 --decode > "./tmp/file.txt" || { echo "Failed to decode and write the service key"; exit 1; }
+              # Install necessary Google Cloud packages via pip
+              echo "Installing Google Cloud SDK packages..."
+              pip install -q google-cloud-secret-manager google-cloud-storage
+              echo "Setting up temporary directory for service key..."
+              mkdir -p ./tmp
+        
+              # Decode service key from environment variable
+              echo "Decoding service key..."
+              echo $GCLOUD_SERVICE_KEY | base64 --decode > "./tmp/file.txt" || { echo "Failed to decode and write the service key"; exit 1; }
+        
+              # Authenticate to Google Cloud with the decoded service key
+              echo "Authenticating to Google Cloud..."
               gcloud auth activate-service-account --key-file="./tmp/file.txt"
+        
+              # Set Google Cloud project
+              echo "Setting Google Cloud project..."
               gcloud config set project langchaindata
+              echo "Cleaning up temporary files..."
               rm -rf ./tmp/
+        
   pulumi-preview:
     executor: python-executor
     steps:
