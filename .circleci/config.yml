@@ -53,8 +53,8 @@ jobs:
         - run:
             name: Authenticate with GCP
             command: |
-              echo $GCLOUD_SERVICE_KEY | base64 --decode > ./tmp/file.text \
-              gcloud auth activate-service-account --key-file=./gcloud-service-key.json
+              echo $GCLOUD_SERVICE_KEY | base64 --decode > ./tmp/file.txt \
+              gcloud auth activate-service-account --key-file=./tmp/file.txt
               gcloud config set project langchaindata
               rm -rf ./tmp
 
