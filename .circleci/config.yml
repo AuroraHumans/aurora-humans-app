@@ -13,7 +13,7 @@ executors:
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_ACCESS_TOKEN
-    working_directory: ./aurora-humans-app/
+    working_directory: ./
 
 jobs:
   setup:
