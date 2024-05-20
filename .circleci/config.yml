@@ -90,10 +90,10 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - setup
+      - gcloud-auth
       - pulumi-preview:
           requires:
-            - setup
+            - gcloud-auth
       - pulumi-deploy:
           requires:
             - pulumi-preview
