@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Build and Push Docker Image
           command: |
-            docker build -t $DOCKER_USERNAME/aurora-humans-app:latest .
+            docker build -t aurora-humans-app .
             docker push $DOCKER_USERNAME/aurora-humans-app:latest
 
   gcloud-auth:
