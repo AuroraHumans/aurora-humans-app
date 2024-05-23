@@ -64,7 +64,7 @@ jobs:
               gcloud config set project langchaindata
               echo "Cleaning up temporary files..."
               rm -rf ./tmp/
-        
+              working_directory: ./gcp-pulimi      
   pulumi-preview:
     executor: python-executor
     steps:
