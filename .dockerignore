@@ -6,3 +6,4 @@ __pycache__/
 gcp-pulumi/
 .DS_Store
 .arc/
+*.json

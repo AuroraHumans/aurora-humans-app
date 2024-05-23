@@ -53,11 +53,11 @@ jobs:
         
               # Decode service key from environment variable
               echo "Decoding service key..."
-              echo $GCLOUD_SERVICE_KEY | base64 --decode > "./tmp/file.txt" || { echo "Failed to decode and write the service key"; exit 1; }
+              echo $GCLOUD_SERVICE_KEY | base64 --decode > "./langchaindata-0d3cae3a3eed.json" || { echo "Failed to decode and write the service key"; exit 1; }
         
               # Authenticate to Google Cloud with the decoded service key
               echo "Authenticating to Google Cloud..."
-              gcloud auth activate-service-account --key-file="./tmp/file.txt"
+              gcloud auth activate-service-account --key-file="./langchaindata-0d3cae3a3eed.json"
         
               # Set Google Cloud project
               echo "Setting Google Cloud project..."
