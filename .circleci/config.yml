@@ -53,7 +53,7 @@ jobs:
         
               # Decode service key from environment variable
               echo "Decoding service key..."
-              export $GCLOUD_SERVICE_KEY | base64 --decode > "./tmp/GCPLoudServiceKey.json" || { echo "Failed to decode and write the service key"; exit 1; }
+              export $GOOGLE_APPLICATION_CREDENTIALS | base64 --decode > "./tmp/GCPLoudServiceKey.json" || { echo "Failed to decode and write the service key"; exit 1; }
         
               # Authenticate to Google Cloud with the decoded service key
               echo "Authenticating to Google Cloud..."
