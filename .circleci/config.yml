@@ -6,9 +6,9 @@ orbs:
 executors:
   python-executor:
     environment:
-       GCLOUD_SERVICE_KEY: $GCLOUD_SERVICE_KEY
-       HOME: $HOME
-       GCP_PROJECT_ID: $GCP_PROJECT_ID
+      GCLOUD_SERVICE_KEY: $GCLOUD_SERVICE_KEY
+      HOME: $HOME
+      GCP_PROJECT_ID: $GCP_PROJECT_ID
     docker:
       - image: cimg/python:3.12.3
         auth:
@@ -39,41 +39,34 @@ jobs:
             docker push $DOCKER_USERNAME/aurora-humans-app:latest
 
   gcloud-auth:
-      executor: python-executor
-      steps:
-        - checkout
-        - run:
-            name: Install Google Cloud SDK and Authenticate
-            command: |
-              # Install necessary Google Cloud packages via pip
-              echo "Installing Google Cloud SDK packages..."
-              pip install -q google-cloud-secret-manager google-cloud-storage
-              echo "Setting up temporary directory for service key..."
-              mkdir -p ./tmp
-        
-              # Decode service key from environment variable
-              echo "Decoding service key..."
-              export $GOOGLE_APPLICATION_CREDENTIALS | base64 --decode > "./tmp/GCPLoudServiceKey.json" || { echo "Failed to decode and write the service key"; exit 1; }
-        
-              # Authenticate to Google Cloud with the decoded service key
-              echo "Authenticating to Google Cloud..."
-              gcloud auth activate-service-account --key-file="./langchaindata-0d3cae3a3eed.json"
-        
-              # Set Google Cloud project
-              echo "Setting Google Cloud project..."
-              gcloud config set project langchaindata
-              echo "Cleaning up temporary files..."
-              rm -rf ./tmp/
-              RUN apt-get update && apt-get install -y curl unzip
-              
-              working_directory: ./gcp-pulimi/     
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Install Google Cloud SDK and Authenticate
+          command: |
+            echo "Installing Google Cloud SDK packages..."
+            pip install google-cloud-secret-manager google-cloud-storage
+            echo "Setting up temporary directory for service key..."
+            mkdir -p ./tmp
+            echo "Decoding service key..."
+            echo $GCLOUD_SERVICE_KEY | base64 --decode > "./tmp/GCPLoudServiceKey.json"
+            echo "Authenticating to Google Cloud..."
+            gcloud auth activate-service-account --key-file="./tmp/GCPLoudServiceKey.json"
+            echo "Setting Google Cloud project..."
+            gcloud config set project $GCP_PROJECT_ID
+            echo "Cleaning up temporary files..."
+            rm -rf ./tmp/
+
   pulumi-preview:
     executor: python-executor
     steps:
       - checkout
       - run:
           name: Install Pulumi
-          command: curl -fsSL https://get.pulumi.com | sh
+          command: |
+            curl -fsSL https://get.pulumi.com | sh
+            export PATH=$HOME/.pulumi/bin:$PATH
       - run:
           name: Install dependencies
           command: pip install -r requirements.txt
@@ -90,7 +83,9 @@ jobs:
       - checkout
       - run:
           name: Install Pulumi
-          command: curl -fsSL https://get.pulumi.com | sh
+          command: |
+            curl -fsSL https://get.pulumi.com | sh
+            export PATH=$HOME/.pulumi/bin:$PATH
       - run:
           name: Install dependencies
           command: pip install -r requirements.txt
@@ -102,10 +97,15 @@ jobs:
           command: pulumi up --yes
 
 workflows:
-  version: 2.1
   build_and_deploy:
     jobs:
       - build
-      - gcloud-auth
-      - pulumi-preview
-      - pulumi-deploy
+      - gcloud-auth:
+          requires:
+            - build
+      - pulumi-preview:
+          requires:
+            - gcloud-auth
+      - pulumi-deploy:
+          requires:
+            - pulumi-preview
