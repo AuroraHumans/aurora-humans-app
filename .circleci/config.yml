@@ -73,7 +73,7 @@ jobs:
       - checkout
       - run:
           name: Install Pulumi
-          command: curl -fsSL https://get.pulumi.com | sh &&
+          command: curl -fsSL https://get.pulumi.com | sh
       - run:
           name: Install dependencies
           command: pip install -r requirements.txt && ENV PATH="/usr/local/pulumi:${PATH}"
