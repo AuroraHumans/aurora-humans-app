@@ -7,7 +7,7 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Add Pulumi to PATH
-ENV PATH=$PATH:/root/.pulumi/bin
+ENV PATH="/usr/local/pulumi:${PATH}"
 
 COPY . /app/
 WORKDIR /app
