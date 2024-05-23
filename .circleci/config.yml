@@ -65,7 +65,8 @@ jobs:
               echo "Cleaning up temporary files..."
               rm -rf ./tmp/
               RUN apt-get update && apt-get install -y curl unzip
-              working_directory: ./gcp-pulimi      
+              
+              working_directory: ./gcp-pulimi     
   pulumi-preview:
     executor: python-executor
     steps:
@@ -75,7 +76,7 @@ jobs:
           command: curl -fsSL https://get.pulumi.com | sh &&
       - run:
           name: Install dependencies
-          command: pip install -r requirements.txt
+          command: pip install -r requirements.txt && ENV PATH="/usr/local/pulumi:${PATH}"
       - run:
           name: Pulumi stack select
           command: pulumi stack select dev
@@ -101,7 +102,7 @@ jobs:
           command: pulumi up --yes
 
 workflows:
-  version: 2
+  version: 2.1
   build_and_deploy:
     jobs:
       - build
