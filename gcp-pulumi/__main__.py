@@ -19,23 +19,23 @@ repo = github.Repository("aurora-humans-app",
 
 # 2. Push to Container Registry
 # Making use of GCP's Container Registry - this step would be a result of your build & push in Cloud Build
-container_registry = gcp.container.Registry("core-apps",
+container_registry = gcp.container.Registry("aurora-humans-container",
     project=os.getenv("GCP_PROJECT_ID")
 )
 
 # 3. Google Build
 # Set up Cloud Build trigger to automate the build and push steps
-build_trigger = gcp.cloudbuild.Trigger("build-aurora-humans",
+'''build_trigger = gcp.cloudbuild.Trigger("build-aurora-humans",
     filename="cloudbuild.yaml",
     project=os.getenv("GCP_PROJECT_ID"),
     trigger_template=gcp.cloudbuild.TriggerTriggerTemplateArgs(
         branch_name="main",
         repo_name=repo.name,
     )
-)
+)'''
 
 # 4. Google Run - Deploy the built image to Cloud Run
-cloud_run_service = gcp.cloudrun.Service("aurora-humans-run",
+cloud_run_service = gcp.cloudrun.Service("aurora-humans-app",
     location="asia",
     template=gcp.cloudrun.ServiceTemplateArgs(
         spec=gcp.cloudrun.ServiceTemplateSpecArgs(
@@ -46,7 +46,7 @@ cloud_run_service = gcp.cloudrun.Service("aurora-humans-run",
     ))
 
 # 5. Google Deploy with 2 stages - setting up a Delivery Pipeline
-delivery_pipeline = gcp.clouddeploy.DeliveryPipeline(resource_name="aurora-deliver-pipeline", location="asia", name="aurora-deliver-pipeline",
+'''delivery_pipeline = gcp.clouddeploy.DeliveryPipeline(resource_name="aurora-deliver-pipeline", location="asia", name="aurora-deliver-pipeline",
     project=os.getenv("GCP_PROJECT_ID"),
     serial_pipeline=gcp.clouddeploy.DeliveryPipelineSerialPipelineArgs(
         stages=[
@@ -58,7 +58,7 @@ delivery_pipeline = gcp.clouddeploy.DeliveryPipeline(resource_name="aurora-deliv
             ),
         ],
     )
-)
+)'''
 
 # @TODO IMPLEMENT GATEWAY
 '''# 6. Create API Gateway - expose Cloud Run services
@@ -90,5 +90,5 @@ api_gateway = gcp.apigateway.Api("aurora-gateway",
 pulumi.export('repo_name', repo.name)
 pulumi.export("container_registry_name", container_registry.id)
 pulumi.export("cloud_run_service_url", cloud_run_service.statuses[0].url)
-pulumi.export("delivery_pipeline_name", delivery_pipeline.id)
+#pulumi.export("delivery_pipeline_name", delivery_pipeline.id)
 #pulumi.export(api_gateway.discovery_endpoint)

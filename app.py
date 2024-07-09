@@ -1,33 +1,40 @@
 import io
-import json
-import os
 import logging
+import os
+
+from lib.gcp.upload_to_gcp import upload_photo_to_gcs
+from lib.db.database import insert_metadata_db 
 import streamlit as st
-from lib.extract_metadata import extract_metadata
-from lib.gcp.gcp_upload import upload_blob
-from google.cloud import storage, Client 
 from dotenv import load_dotenv
+from google.cloud import storage
 from PIL import Image
-from lib.database import insert_metadata
+
+from lib.db.database import insert_metadata_db
+from lib.extract_metadata import extract_metadata
 
 load_dotenv()
+_logger = logging.getLogger(__name__)
+
 
 @st.cache_data
 def uploaded_file(file):
     return file
 # Constants
-MAX_IMAGE_SIZE = (224, 224)  # Change to your requirements
+MAX_IMAGE_SIZE = (224, 224)  # Change to your requirements  - Optimized for PyTorch.
 
-st.title("💚💚🥰 Aurora Humans Worldwide Upload Dataset")
+st.title("🌎💚 :: Connected Hearts - Aurora 2024 Event :: 💚🌎") 
+st.subheader("A Worldwide Moment in Time")
 st.divider()
-file_upload = st.file_uploader("Upload Your Image", type=["png", "jpg", "jpeg"])
+st.text("The world watched as the sky came alive. Take a minute to remind the world.")
+st.divider()
+file_upload = st.file_uploader("Upload Your Image", type=["png", "jpg", "jpeg", "webp"])
 
 
 # Streamlit file uploader
 # Metadata form
 event = st.multiselect("Event?", ["Aurora2024"], default="Aurora2024")
-
-title = st.text_input("Title of the Image")
+continent = st.multiselect(label="Continent",options=["North America", "South America", "Europe", "Asia", "Africa", "Australia", "Antarctica"], default=None, max_selections=1)
+title = st.text_input("Your Name For the Image")
 city = st.text_input("City")
 date = st.date_input("Date")
 person_in_image=st.checkbox("Person in the image?")
@@ -43,13 +50,12 @@ clicked = st.button("Submit")
 
 st.divider()
 
-
 if clicked:
     with st.spinner("Uploading to Aurora Humans..."):
         
         up_file = uploaded_file(file_upload)
         # For saving
-        # file_path = f"./tmp/{up_file}"
+        file_path = f"./tmp/{up_file}"
         
         # Read the image file
         image = Image.open(up_file)
@@ -59,6 +65,9 @@ if clicked:
 
         # Convert back to bytes
         img_byte_arr = io.BytesIO()
+        
+        #RM temp
+        os.removedirs(f"./tmp/{up_file}")
     
         #image.save(format=image.format, fp=file_path)
         img_byte_arr = img_byte_arr.getvalue()
@@ -71,6 +80,7 @@ if clicked:
             "filename": up_file.name,
             "event": event,
             "title": title,
+            "continent": continent,
             "date": date,
             "city": city,
             "latitude": metadata[0],
@@ -80,14 +90,14 @@ if clicked:
             "other_objects": other_objects
             
         }
-        upload_blob(image, image)
-        logging.info(f"Image: {image} uploaded")
-        upload_blob(metadata, f"{metadata}.json")
-        logging.info(f"Metadata: {metadata} uploaded")
-        insert_metadata(metadata)
-        logging.info(f"Metadata: {metadata} stored in Mongo")
+        
+        upload_photo_to_gcs(image, os.getenv("GCP_PROJECT_ID"), os.getenv("GCP_SECRET_ID"), bucket_name)
+        _logger.info(f"Image: {filename} uploaded")
+        # INSERT METADATA INTO MONGO
+        insert_metadata_db(metadata)
+        _logger.info(f"Metadata: {metadata} stored in Mongo")
         st.success("Image and metadata successfully uploaded to Google Cloud")
-        st.text("The preview is lower quality but do not be alarmed - yours is fine.")
+        st.text("The preview is lower quality but do not be alarmed - the size is perfect for processing.")
 else:
     st.error("Please provide both title and description for the image.")
     

@@ -6,4 +6,13 @@ __pycache__/
 gcp-pulumi/
 .DS_Store
 .arc/
-*.json
+tests/
+Dockerfile
+README.md
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.pytest_cache
+
+
