@@ -12,6 +12,7 @@ langchaindata-bcc71fad6f2a.json
 *.bak
 *.json
 .gitignore
+key.json
 
 
 

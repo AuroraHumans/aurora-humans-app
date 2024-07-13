@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from google.cloud import storage
 from PIL import Image
 
+
 from lib.db.database import insert_metadata_db
 from lib.extract_metadata import extract_metadata
 

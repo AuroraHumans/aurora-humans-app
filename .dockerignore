@@ -16,5 +16,9 @@ __pycache__
 .pytest_cache
 .github/
 .arc/
+.github/
+tests/
+tmp/
+cloudbuild.yaml
 
 
