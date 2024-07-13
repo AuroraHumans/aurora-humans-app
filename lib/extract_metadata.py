@@ -13,7 +13,7 @@ def get_decimal_from_dms(dms, ref):
 # Function to extract metadata
 def extract_metadata(image_path):
     # Open image file for reading (binary mode)
-    with open(image_path, 'r') as image_file:
+    with open(image_path, 'rb') as image_file:
         # Using exifread to get the EXIF metadata
         tags = exifread.process_file(image_file, details=True)
 
