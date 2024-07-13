@@ -1,4 +1,4 @@
-api_spec=""
+api_spec="""
 swagger: "2.0"
 info:
   title: "Streamlit App API"
@@ -26,7 +26,7 @@ paths:
           description: "Service is unhealthy"
           schema:
             type: string
-    /gateway-interface:
+  /gateway-interface:
     get:
       description: "API Gateway"
       x-google-backend:

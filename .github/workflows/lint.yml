@@ -3,7 +3,7 @@ name: Lint Code Base
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
   lint:
@@ -18,33 +18,29 @@ jobs:
       with:
         python-version: '3.11'  # Adjust the Python version as necessary
 
-    - name: Install Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python -
-        echo "${HOME}/.local/bin" >> $GITHUB_PATH
-
     - name: Install dependencies
       run: |
-        poetry install
+        python -m pip install --upgrade pip
+        pip install isort black flake8 pylint
 
     - name: Run isort
       run: |
-        poetry run isort .
+        isort .
       continue-on-error: true
 
     - name: Run black
       run: |
-        poetry run black .
+        black .
       continue-on-error: true
 
     - name: Run flake8
       run: |
-        poetry run flake8 .
+        flake8 .
       continue-on-error: true
 
     - name: Run pylint
       run: |
-        poetry run find . -name "*.py" | xargs poetry run pylint
+        find . -name "*.py" | xargs pylint
       continue-on-error: true
 
     - name: Archive Lint Results
